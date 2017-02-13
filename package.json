@@ -1,0 +1,52 @@
+{
+  "name": "styleguidist-goodies",
+  "version": "1.0.0",
+  "description": "Styleguidist Goodies to make react-styleguidist use easier",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trabe/styleguidist-goodies.git"
+  },
+  "keywords": [],
+  "author": "Trabe Soluciones",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trabe/styleguidist-goodies/issues"
+  },
+  "homepage": "https://github.com/trabe/styleguidist-goodies#readme",
+  "scripts": {
+    "clean": "rm -fR ./lib ",
+    "precompile": "npm run clean",
+    "compile": "./node_modules/babel-cli/bin/babel.js -d ./lib ./src",
+    "compile:watch": "npm run compile -- --watch",
+    "pretest": "npm run compile && rm -fR ./test/styleguide",
+    "test": "styleguidist build",
+    "server": "styleguidist server",
+    "start": "npm run server",
+    "prepublish": "npm run compile",
+    "styleguide-server": "styleguidist server"
+  },
+  "peerDependencies": {
+    "react-styleguidist": ">= 4.6.0 < 5.0.0"
+  },
+  "dependencies": {
+    "fs-extra": "0.30.0",
+    "glob": "7.1.1",
+    "on-build-webpack": "0.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "6.16.0",
+    "babel-core": "6.22.1",
+    "babel-loader": "6.2.5",
+    "babel-plugin-webpack-alias": "2.1.1",
+    "babel-preset-es2015": "6.16.0",
+    "babel-preset-react": "^6.22.0",
+    "babel-preset-stage-1": "^6.22.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-styleguidist": "^4.6.3",
+    "webpack": "^1.14.0"
+  }
+}
+
+

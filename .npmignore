@@ -1,0 +1,9 @@
+node_modules
+test
+src
+.babelrc
+.npmignore
+.git
+.gitignore
+styleguide.config.js
+webpack.config.js
