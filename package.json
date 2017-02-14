@@ -1,6 +1,6 @@
 {
   "name": "styleguidist-goodies",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Styleguidist Goodies to make react-styleguidist use easier",
   "main": "lib/index.js",
   "repository": {
