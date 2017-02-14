@@ -20,11 +20,10 @@
     "compile": "./node_modules/babel-cli/bin/babel.js -d ./lib ./src",
     "compile:watch": "npm run compile -- --watch",
     "pretest": "npm run compile && rm -fR ./test/styleguide",
-    "test": "styleguidist build",
-    "server": "styleguidist server",
+    "test": "styleguidist build --config styleguide.config.js",
+    "server": "styleguidist server --config styleguide.config.js",
     "start": "npm run server",
-    "prepublish": "npm run compile",
-    "styleguide-server": "styleguidist server"
+    "prepublish": "npm run compile"
   },
   "peerDependencies": {
     "react-styleguidist": ">= 4.6.0 < 5.0.0"
