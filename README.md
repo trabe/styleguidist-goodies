@@ -78,17 +78,17 @@ changing some defaults and providing some goodies:
 | serverHost | String |  | Host used by the styleguidist server. | `0.0.0.0` |
 | serverPort | String |  | Port used by the styleguidist server. | `3032` |
 | highlightTheme | String |  | CodeMirror theme name to use for syntax highlighting in examples | `base16-light` |
-| getExampleFilename | Function |  | Function that returns examples file path for a given component path. | See [`getExampleFilename`](#`getExampleFilename`) |
-| getComponentPathLine | Function |  | Function that returns a component path line (name displayed under the component name). | See [`getComponentPathLine`](#`getComponentPathLine`) |
-| updateWebpackConfig | Function |  | Function that allows you to modify Webpack config used by styleguidist. | See [`updateWebpackConfig`](#`updateWebpackConfig`) |
-| formatImport | function | ✓* | Callback used to generate the import declaration. | See [`formatImport`](#`formatImport`) |
+| getExampleFilename | Function |  | Function that returns examples file path for a given component path. | See [`getExampleFilename`](#getExampleFilename) |
+| getComponentPathLine | Function |  | Function that returns a component path line (name displayed under the component name). | See [`getComponentPathLine`](#getComponentPathLine) |
+| updateWebpackConfig | Function |  | Function that allows you to modify Webpack config used by styleguidist. | See [`updateWebpackConfig`](#updateWebpackConfig) |
+| formatImport | function | ✓* | Callback used to generate the import declaration. | See [`formatImport`](#formatImport) |
 | exampleWrapper | String |  | Path to a module that defines a React component which will be used as a wrapper in the examples. |
 
 #### sections
 
-  Section configuration with `react-styleguidist` requires a precise definition of each section and its components. However, **Styleguidist-goodies** allows section definition by file structure conventions.
+  Section configuration with [`react-styleguidist`](https://github.com/styleguidist/react-styleguidist) requires a precise definition of each section and its components. However, **Styleguidist-goodies** allows section definition by file structure conventions.
 
-  Configuring sections using plain `react-styleguidist`:
+  Configuring sections using plain [`react-styleguidist`](https://github.com/styleguidist/react-styleguidist):
 
   ```javascript
   module.exports = {
