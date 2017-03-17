@@ -35,6 +35,7 @@ const extractDocSections = src => {
       name: section.name,
       content: sectionContentIndex,
       components: section.components,
+      sections: section.sections,
       position: section.position,
     };
   }).filter(Boolean);

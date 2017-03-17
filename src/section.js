@@ -7,9 +7,9 @@ class Section {
   constructor(sectionPath, configFilePath) {
     this.sectionPath = sectionPath;
     this.configFilePath = configFilePath;
-    this.componentsPattern = "**/*.js";
     this.sectionConfig = this.getSectionConfig();
-    this.subsectionsOrder = this.getSubsectionsOrder();
+    this.componentsPattern = this.getComponentsPattern();
+    this.componentsOrder = this.getComponentsOrder();
   }
 
   // return the custom components for the defined section config.
@@ -17,7 +17,16 @@ class Section {
   // by a function that returns an array of module paths
   get components() {
     return this.needsToConfigurateComponents() ?
-      () => this.customSubsections() : path.join(this.sectionPath, this.componentsPattern);
+      () => this.customComponents() : this.getDefaultComponents();
+  }
+
+  get sections() {
+    const sections = this.sectionConfig.sections || [];
+    return sections.map(s => ({
+      ...s,
+      components: path.join(this.sectionPath, s.components),
+      content: s.content ? path.join(this.sectionPath, s.content) : null,
+    }));
   }
 
   get position() {
@@ -28,33 +37,43 @@ class Section {
     return this.sectionConfig.name || path.basename(this.sectionPath);
   }
 
+  getDefaultComponents() {
+    return (this.sectionConfig.components && typeof this.sectionConfig.components === "function") ?
+      this.sectionConfig.components :
+      path.join(this.sectionPath, this.componentsPattern);
+  }
+
+  getComponentsPattern() {
+    return this.sectionConfig.components || "**/*.js";
+  }
+
   getSectionConfig() {
     return getJsonData(this.configFilePath) || {};
   }
 
-  getSubsectionsPaths() {
+  getComponentsPaths() {
     return glob.sync(path.resolve(this.sectionPath, this.componentsPattern));
   }
 
-  getSubsectionsOrder() {
+  getComponentsOrder() {
     return this.sectionConfig.componentsOrder || [];
   }
 
-  subsectionPosition(subsectionPath) {
-    const subsectionName = path.basename(subsectionPath, ".js");
-    const position = this.subsectionsOrder.findIndex((s) => s === subsectionName);
+  componentPosition(componentPath) {
+    const componentName = path.basename(componentPath, ".js");
+    const position = this.componentsOrder.findIndex((s) => s === componentName);
     return position > -1 ? position : null;
   }
 
   needsToConfigurateComponents() {
-    return this.subsectionsOrder.length > 0;
+    return this.componentsOrder.length > 0;
   }
 
-  customSubsections() {
-    return this.getSubsectionsPaths()
+  customComponents() {
+    return this.getComponentsPaths()
       .map(p => path.normalize(p)) // Added to normalize path separators on Windows
       .sort((a, b) =>
-        compareNumber(this.subsectionPosition(a), this.subsectionPosition(b))
+        compareNumber(this.componentPosition(a), this.componentPosition(b))
       );
   }
 }
@@ -65,5 +84,6 @@ export function configureSection(sectionPath, configFilePath) {
     name: section.sectionName,
     components: section.components,
     position: section.position,
+    sections: section.sections,
   };
 }

@@ -125,14 +125,24 @@ changing some defaults and providing some goodies:
   ```
   {
     "position": 1,
-    "componentsOrder": ["button", "button-primary", "button-secondary"]
+    "components": "./*.js",
+    "componentsOrder": ["button", "button-primary", "button-secondary"],
+    "sections": [
+      {
+        "name": "button-components",
+        "content": "/_guide/button-components.md",
+        "components": "/button-components/**/*.js"
+      }
+    ]
   }
   ```
 
 | Param | Type | Description | Default value |
 |:---|:---|:---|:---|
 | position | Integer | Section's position in the style guide, ascending order | Alphabetic |
+| components | String | The list of components | `"**/*.js"` |
 | componentsOrder | Array | Components' order inside the section. Components are referenced by their file names without extension | Alphabetic |
+| sections | Array | List of subsections | `[]` |
 
 #### getExampleFilename
 
