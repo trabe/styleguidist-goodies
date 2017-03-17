@@ -31,6 +31,7 @@ const extractDocSections = src => {
     const section = configureSection(sectionPath, sectionConfigFilePath);
 
     return {
+      path: sectionPath,
       name: section.name,
       content: sectionContentIndex,
       components: section.components,
@@ -52,15 +53,21 @@ const defaultGetComponentPathLine = formatImport => componentPath => {
   return `import ${capitalize(name)} from "${formatImport(dir, name)}";`;
 };
 
-const defaultGetExampleFilename = componentPath => {
+const defaultGetExampleFilename = sections => componentPath => {
+
   const name = path.basename(componentPath, ".js");
 
   if (name === "index") {
     return null;
   }
+  const exampleFilename = sections.map(s => {
+    const files = glob.sync(`**/${name}.md`, { cwd: s.path });
+    if (files.length > 0) {
+      return path.join(s.path, files[0]);
+    }
+  }).filter(filename => Boolean(filename))[0];
 
-  const dir = path.dirname(componentPath);
-  return path.join(dir, GUIDE_DIR, `${name}.md`);
+  return exampleFilename;
 };
 
 const defaultWebpackConfig = (webpackConfig, assetsDir, styleguideDir, exampleWrapper) => (config, env) => {
@@ -101,31 +108,33 @@ export const guideConfig = ({
   serverHost = "0.0.0.0",
   serverPort = 3032,
   highlightTheme = "base16-light",
-  getExampleFilename = defaultGetExampleFilename,
+  getExampleFilename,
   getComponentPathLine,
   updateWebpackConfig,
   webpackConfig,
   formatImport,
   exampleWrapper,
   ...rest,
-}) => ({
-  ...rest,
+}) => {
+  const sectionsPaths = sections ? sections : extractDocSections(components);
+  return {
+    ...rest,
 
-  sections: sections ? sections : extractDocSections(components),
+    sections: sectionsPaths,
 
-  styleguideDir,
+    styleguideDir,
 
-  serverHost,
+    serverHost,
 
-  serverPort,
+    serverPort,
 
-  highlightTheme,
+    highlightTheme,
 
-  getExampleFilename,
+    getExampleFilename: getExampleFilename ? getExampleFilename : defaultGetExampleFilename(sectionsPaths),
 
-  getComponentPathLine: getComponentPathLine ? getComponentPathLine : formatImport && defaultGetComponentPathLine(formatImport),
+    getComponentPathLine: getComponentPathLine ? getComponentPathLine : formatImport && defaultGetComponentPathLine(formatImport),
 
-  updateWebpackConfig: updateWebpackConfig ? updateWebpackConfig : defaultWebpackConfig(webpackConfig, assetsDir, styleguideDir, exampleWrapper),
+    updateWebpackConfig: updateWebpackConfig ? updateWebpackConfig : defaultWebpackConfig(webpackConfig, assetsDir, styleguideDir, exampleWrapper),
 
-  assetsDir,
-});
+    assetsDir,
+  }};
