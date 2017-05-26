@@ -13,7 +13,7 @@ const GUIDE_CONFIG = "config.json";
 const fetchSections = src => {
   const basePath = process.cwd();
   const sectionsBasePath = path.join(basePath, src);
-  const dirs = glob.sync("**/_guide", { cwd: sectionsBasePath });
+  const dirs = glob.sync(`**/${GUIDE_DIR}`, { cwd: sectionsBasePath });
   return dirs.map(section => path.resolve(path.join(sectionsBasePath, section), ".."));
 };
 
@@ -71,20 +71,10 @@ const defaultGetExampleFilename = sections => componentPath => {
   return exampleFilename;
 };
 
-const defaultWebpackConfig = (webpackConfig, assetsDir, styleguideDir, exampleWrapper) => (config, env) => {
-
-  const loaders = webpackConfig.module.loaders.map(loader => {
-    // ugly, ugly, ugly trick to prevent react-styleguidist errors...
-    if (!loader.include && !loader.exclude) {
-      loader.include = "node_modules";
-    }
-
-    return loader;
-  });
-
-  config.module.loaders.push(...loaders);
-
+const defaultWebpackConfig = (config, assetsDir, styleguideDir, exampleWrapper) => {
   if (assetsDir) {
+    config.plugins = config.plugins || [];
+
     config.plugins.push(new WebpackOnBuildPlugin(() => {
       try {
         fs.copySync(assetsDir, styleguideDir);
@@ -95,6 +85,8 @@ const defaultWebpackConfig = (webpackConfig, assetsDir, styleguideDir, exampleWr
   }
 
   if (exampleWrapper) {
+    config.resolve = config.resolve || {};
+    config.resolve.alias = config.resolve.alias || {};
     config.resolve.alias["rsg-components/Wrapper"] = exampleWrapper;
   }
 
@@ -102,7 +94,7 @@ const defaultWebpackConfig = (webpackConfig, assetsDir, styleguideDir, exampleWr
 };
 
 export const guideConfig = ({
-  components = "./src/components",
+  sectionsPath = "./src/components",
   sections,
   styleguideDir = "./guide",
   assetsDir,
@@ -117,11 +109,15 @@ export const guideConfig = ({
   exampleWrapper,
   ...rest,
 }) => {
-  const sectionsPaths = sections ? sections : extractDocSections(components);
+
+  const sectionsPaths = sectionsPath ? extractDocSections(sectionsPath) : null;
+
   return {
     ...rest,
 
-    sections: sectionsPaths,
+    webpackConfig: defaultWebpackConfig(webpackConfig, assetsDir, styleguideDir, exampleWrapper),
+
+    sections: sections || sectionsPaths,
 
     styleguideDir,
 
@@ -135,7 +131,6 @@ export const guideConfig = ({
 
     getComponentPathLine: getComponentPathLine ? getComponentPathLine : formatImport && defaultGetComponentPathLine(formatImport),
 
-    updateWebpackConfig: updateWebpackConfig ? updateWebpackConfig : defaultWebpackConfig(webpackConfig, assetsDir, styleguideDir, exampleWrapper),
-
     assetsDir,
-  }};
+  }
+};
