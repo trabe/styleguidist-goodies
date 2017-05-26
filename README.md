@@ -57,7 +57,7 @@ module.exports = guideConfig({
 
   host: "0.0.0.0",
 
-  port: "3032",
+  port: 3032,
 
   exampleWrapper: path.join(__dirname, "src", "styleguide", "example-wrapper"),
 
@@ -72,11 +72,12 @@ changing some defaults and providing some goodies:
 
 | Param | Type | Required? | Description | Default value|
 |:---|:---|:---|:---|:---|
-| components | String | ✓ | Components root path. Same as using `components` with `*` | `./src/components`|
+| components | String | function | ✓ | Components glob expression or function |
 | sections | Array | |  | See [sections](#sections) |
+| sectionsPath | String | |  | See [sections](#sections) |
 | styleguideDir | String |  | Path to the generated style guide. | `./guide` |
 | serverHost | String |  | Host used by the styleguidist server. | `0.0.0.0` |
-| serverPort | String |  | Port used by the styleguidist server. | `3032` |
+| serverPort | Number |  | Port used by the styleguidist server. | `3032` |
 | highlightTheme | String |  | CodeMirror theme name to use for syntax highlighting in examples | `base16-light` |
 | getExampleFilename | Function |  | Function that returns examples file path for a given component path. | See [`getExampleFilename`](#getExampleFilename) |
 | getComponentPathLine | Function |  | Function that returns a component path line (name displayed under the component name). | See [`getComponentPathLine`](#getComponentPathLine) |
@@ -103,7 +104,7 @@ changing some defaults and providing some goodies:
   };
   ```
 
-  With **Styleguidist-goodies** this section structure can be defined implicitly through the file structure:
+  With **Styleguidist-goodies**, you can specify a `sectionPath` parameter and this section structure will be defined implicitly through the file structure:
 
   ```
   project
